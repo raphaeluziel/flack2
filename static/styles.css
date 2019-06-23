@@ -1,0 +1,23 @@
+body{
+  margin: 40px;
+  background-color: lightgreen;
+  font-family: Tahoma, sans-serif;
+}
+
+.button{
+  background-color: pink;
+  border-radius: 50%;
+  padding: 6px;
+  text-align: center;
+  cursor: pointer;
+}
+
+h1{
+  text-align: center;
+  font-family: Georgia, serif;
+  font-style: italic;
+}
+
+.topics{
+  display: none;
+}
