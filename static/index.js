@@ -1,16 +1,22 @@
 document.addEventListener('DOMContentLoaded', () => {
 
-  console.log(localStorage.getItem('display_name'));
+  // Functions to choose which sections to show or hide
+  var show = function(sections)
+  {
+    Object.keys(sections).forEach(function(key){
+      document.querySelector(key).style.display = sections[key];
+    });
+  };
 
-  if (!localStorage.getItem('display_name'))
-  {
-    document.querySelector(".welcome").style.display = "block";
-    document.querySelector(".topics").style.display = "none";
+  // On page load show the welcome section only
+  show({".welcome": "block", ".topics": "none", ".messaging": "none"});
+
+  // Has user already chosen a display name?
+  if (!localStorage.getItem('display_name')){
+    show({".welcome": "block", ".topics": "none", ".messaging": "none"});
   }
-  else
-  {
-    document.querySelector(".welcome").style.display = "none";
-    document.querySelector(".topics").style.display = "block";
+  else{
+    show({".welcome": "none", ".topics": "block", ".messaging": "none"});
     document.querySelector("#username").innerHTML = localStorage.getItem('display_name');
   }
 
@@ -20,10 +26,7 @@ document.addEventListener('DOMContentLoaded', () => {
     display_name = document.querySelector("#display_name").value;
     localStorage.setItem("display_name", display_name);
     document.querySelector("#username").innerHTML = display_name;
-    document.querySelector(".welcome").style.display = "none";
-    document.querySelector(".topics").style.display = "block";
+    show({".welcome": "none", ".topics": "block", ".messaging": "none"});
   }
-
-
 
 });

@@ -1,5 +1,6 @@
 body{
-  margin: 40px;
+  max-width: 1000px;
+  margin: 40px auto;
   background-color: lightgreen;
   font-family: Tahoma, sans-serif;
 }
