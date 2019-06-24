@@ -8,25 +8,38 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   };
 
-  // On page load show the welcome section only
-  show({".welcome": "block", ".topics": "none", ".messaging": "none"});
-
-  // Has user already chosen a display name?
+  // Welcome section
+  // If user already chose a display name skip welcome and go to topics section
   if (!localStorage.getItem('display_name')){
-    show({".welcome": "block", ".topics": "none", ".messaging": "none"});
+    show({".welcome": "block", ".channel": "none", ".messaging": "none"});
   }
   else{
-    show({".welcome": "none", ".topics": "block", ".messaging": "none"});
+    show({".welcome": "none", ".channel": "block", ".messaging": "none"});
     document.querySelector("#username").innerHTML = localStorage.getItem('display_name');
   }
 
-  // Submit display name
+  // Store username in localstorage, then move on to topics section
   document.querySelector("#submit_display_name").onclick = () =>
   {
     display_name = document.querySelector("#display_name").value;
     localStorage.setItem("display_name", display_name);
     document.querySelector("#username").innerHTML = display_name;
-    show({".welcome": "none", ".topics": "block", ".messaging": "none"});
+    show({".welcome": "none", ".channel": "block", ".messaging": "none"});
+  }
+
+  // Channels section
+  document.querySelector("#submit_channel").onclick = () => {
+    channel = document.querySelector("#channel").value
+    localStorage.setItem("channel", channel);
+    const li = document.createElement('li');
+    li.innerHTML = "<a href='/" + channel + "'>" + channel + "</a>";
+    document.querySelector("#channel_list").append(li);
+    document.querySelector("#channel").value = "";
+  };
+
+  // Messaging section
+  if(document.querySelector('#begin').innerHTML == "True"){
+    show({".welcome": "none", ".channel": "none", ".messaging": "block"});
   }
 
 });

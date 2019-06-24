@@ -19,10 +19,15 @@ message_list = []
 
 @app.route("/")
 def index():
-    return render_template("index.html")
+    return render_template("index.html", begin_messaging=False)
+
+@app.route("/<string:channel>")
+def channel(channel):
+    print("Yo yo yo!!!")
+    return render_template("index.html", begin_messaging=True)
 
 # Server receives message sent by client
-@socketio.on("recieve then send message")
+@socketio.on("receive then send message")
 def message(data):
     print(data)
     message_list.append(data)
@@ -33,4 +38,5 @@ def message(data):
 
 
 if __name__ == "__main__":
+    print("OK, it should be running")
     socketio.run(app, host='0.0.0.0')

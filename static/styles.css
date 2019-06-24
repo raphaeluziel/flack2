@@ -5,6 +5,10 @@ body{
   font-family: Tahoma, sans-serif;
 }
 
+#begin{
+  display: block;
+}
+
 .button{
   background-color: pink;
   border-radius: 50%;
@@ -17,8 +21,4 @@ h1{
   text-align: center;
   font-family: Georgia, serif;
   font-style: italic;
-}
-
-.topics{
-  display: none;
 }
