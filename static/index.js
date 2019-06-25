@@ -29,17 +29,40 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Channels section
   document.querySelector("#submit_channel").onclick = () => {
+    // Create a channel from input and store in localstorage
     channel = document.querySelector("#channel").value
     localStorage.setItem("channel", channel);
-    const li = document.createElement('li');
-    li.innerHTML = "<a href='/" + channel + "'>" + channel + "</a>";
-    document.querySelector("#channel_list").append(li);
+    // Create buttons to access the channels
+    const button = document.createElement('button');
+    button.innerHTML = channel;
+    document.querySelector('#channel_list').appendChild(button);
+    // Clear the input for new inputs
     document.querySelector("#channel").value = "";
+    // Go to the messaging section
+    document.querySelector('#channel_chosen').innerHTML = channel;
+    show({".welcome": "none", ".channel": "block", ".messaging": "block"});
   };
 
-  // Messaging section
-  if(document.querySelector('#begin').innerHTML == "True"){
-    show({".welcome": "none", ".channel": "none", ".messaging": "block"});
-  }
+  // Start the socket connection
+  var socket = io.connect(location.protocol + '//' + document.domain + ':' + location.port);
+  socket.on('connect', () => {
+    document.querySelector('#submit_message').onclick = () => {
+      data = {
+        "username": localStorage.getItem('display_name'),
+        "channel": localStorage.getItem('channel'),
+        "timestamp": new Date(),
+        "message": document.querySelector('#message').value
+      };
+      socket.emit('process message', data);
+    };
+  });
+
+  socket.on('information', () => {
+    var counter = data.length;
+    const li = document.createElement('li');
+    li.innerHTML = '<b>' + data.username + '</b><br>&nbsp;&nbsp;&nbsp;&nbsp;<i>' + data.message + '</i>';
+    document.querySelector('#message_list').append(li);
+  });
+
 
 });

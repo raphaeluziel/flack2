@@ -22,17 +22,15 @@
       <p>please choose a channel to join, or create one of your own.</p>
       <input id="channel" type="text" placeholder="create new channel">
       <button id="submit_channel" class="button">go!</button>
-      <ul id="channel_list"></ul>
+      <div id="channel_list"></div>
     </div>
 
     <div class="messaging">
-      <p>start messaging!</p>
+      <p>start messaging in the <span id="channel_chosen"></span> channel!</p>
       <textarea id="message"></textarea>
       <button id="submit_message" class="button">go!</button>
       <ul id="message_list"></ul>
     </div>
-
-    <div id="begin">{{ begin_messaging }}</div>
 
   </body>
 </html>

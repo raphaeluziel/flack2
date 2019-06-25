@@ -19,15 +19,11 @@ message_list = []
 
 @app.route("/")
 def index():
-    return render_template("index.html", begin_messaging=False)
+    return render_template("index.html")
 
-@app.route("/<string:channel>")
-def channel(channel):
-    print("Yo yo yo!!!")
-    return render_template("index.html", begin_messaging=True)
 
 # Server receives message sent by client
-@socketio.on("receive then send message")
+@socketio.on("process message")
 def message(data):
     print(data)
     message_list.append(data)
