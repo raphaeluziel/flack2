@@ -25,9 +25,9 @@ def index():
 # Server receives message sent by client
 @socketio.on("process message")
 def message(data):
-    print(data)
+    #print(data)
     message_list.append(data)
-    print("python - messages: {}".format(message_list))
+    #print("python - messages: {}".format(message_list))
 
     # Server sends client the data
     emit("information", message_list, broadcast=True)

@@ -57,11 +57,14 @@ document.addEventListener('DOMContentLoaded', () => {
     };
   });
 
-  socket.on('information', () => {
-    var counter = data.length;
-    const li = document.createElement('li');
-    li.innerHTML = '<b>' + data.username + '</b><br>&nbsp;&nbsp;&nbsp;&nbsp;<i>' + data.message + '</i>';
-    document.querySelector('#message_list').append(li);
+  socket.on('information', data => {
+    console.log(data);
+    var i = data.length;
+    if (data[i-1].channel == localStorage.getItem('channel')){
+      const li = document.createElement('li');
+      li.innerHTML = '<b>' + data[i-1].username + '</b><br>&nbsp;&nbsp;&nbsp;&nbsp;<i>' + data[i-1].message + '</i>';
+      document.querySelector('#message_list').append(li);
+    }
   });
 
 
