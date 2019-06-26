@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js"></script>
     <script type="text/javascript" src="/static/index.js"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <link rel="stylesheet" href="/static/styles.css">
     <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
 <link rel="icon" href="/favicon.ico" type="image/x-icon">
@@ -15,22 +16,22 @@
 
     <div class="welcome">
       <p>first choose a display name:</p>
-      <input id="display_name" type="text" placeholder="display name">
-      <button id="submit_display_name" class="button">go!</button>
+      <input id="display_name" type="text" class="form-control" placeholder="display name" autofocus>
+      <button id="submit_display_name" class="btn btn-success">go!</button>
     </div>
 
     <div class="channel">
       <p>nice of you to join us, <span id="username"></span>!</p>
       <p>please choose a channel to join, or create one of your own.</p>
-      <input id="channel" type="text" placeholder="create new channel">
-      <button id="submit_channel" class="button">go!</button>
+      <input id="channel" type="text" class="form-control" placeholder="create new channel" autofocus>
+      <button id="submit_channel" class="btn btn-success">go!</button>
       <div id="channel_list"></div>
     </div>
 
     <div class="messaging">
       <p>start messaging in the <span id="channel_chosen"></span> channel!</p>
-      <textarea id="message"></textarea>
-      <button id="submit_message" class="button">go!</button>
+      <textarea id="message" rows="1" autofocus></textarea>
+      <button id="submit_message" class="btn btn-success">go!</button>
       <ul id="message_list"></ul>
     </div>
 

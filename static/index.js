@@ -10,10 +10,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Welcome section
   // If user already chose a display name skip welcome and go to topics section
-  if (!localStorage.getItem('display_name')){
-    show({".welcome": "block", ".channel": "none", ".messaging": "none"});
-  }
-  else{
+  if (localStorage.getItem('display_name')){
     show({".welcome": "none", ".channel": "block", ".messaging": "none"});
     document.querySelector("#username").innerHTML = localStorage.getItem('display_name');
   }
@@ -34,6 +31,7 @@ document.addEventListener('DOMContentLoaded', () => {
     localStorage.setItem("channel", channel);
     // Create buttons to access the channels
     const button = document.createElement('button');
+    button.className = "btn btn-info";
     button.innerHTML = channel;
     document.querySelector('#channel_list').appendChild(button);
     // Clear the input for new inputs
@@ -47,10 +45,11 @@ document.addEventListener('DOMContentLoaded', () => {
   var socket = io.connect(location.protocol + '//' + document.domain + ':' + location.port);
   socket.on('connect', () => {
     document.querySelector('#submit_message').onclick = () => {
+      when = new Date();
       data = {
         "username": localStorage.getItem('display_name'),
         "channel": localStorage.getItem('channel'),
-        "timestamp": new Date(),
+        "timestamp": when.toDateString() + ' at ' + when.toLocaleTimeString(),
         "message": document.querySelector('#message').value
       };
       socket.emit('process message', data);
@@ -62,7 +61,7 @@ document.addEventListener('DOMContentLoaded', () => {
     var i = data.length;
     if (data[i-1].channel == localStorage.getItem('channel')){
       const li = document.createElement('li');
-      li.innerHTML = '<b>' + data[i-1].username + '</b><br>&nbsp;&nbsp;&nbsp;&nbsp;<i>' + data[i-1].message + '</i>';
+      li.innerHTML = '<b>' + data[i-1].username + '</b> (<i style="font-size:70%;">' + data[i-1].timestamp + '</i>)<br>&nbsp;&nbsp;&nbsp;&nbsp;<i>' + data[i-1].message + '</i>';
       document.querySelector('#message_list').append(li);
     }
   });
