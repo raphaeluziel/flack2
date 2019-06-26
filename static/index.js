@@ -11,7 +11,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // Welcome section
   // If user already chose a display name skip welcome and go to topics section
   if (localStorage.getItem('display_name')){
-    show({".welcome": "none", ".channel": "block", ".messaging": "none"});
+    show({".welcome": "block", ".channel": "block", ".messaging": "none"});
     document.querySelector("#username").innerHTML = localStorage.getItem('display_name');
   }
 
@@ -21,7 +21,7 @@ document.addEventListener('DOMContentLoaded', () => {
     display_name = document.querySelector("#display_name").value;
     localStorage.setItem("display_name", display_name);
     document.querySelector("#username").innerHTML = display_name;
-    show({".welcome": "none", ".channel": "block", ".messaging": "none"});
+    show({".welcome": "block", ".channel": "block", ".messaging": "none"});
   }
 
   // Channels section
@@ -33,12 +33,17 @@ document.addEventListener('DOMContentLoaded', () => {
     const button = document.createElement('button');
     button.className = "btn btn-info";
     button.innerHTML = channel;
+    button.onclick = function() {
+      localStorage.setItem("channel", button.innerHTML);
+      document.querySelector('#channel_chosen').innerHTML = button.innerHTML;
+      document.querySelector('#message_list').innerHTML = '';
+    }
     document.querySelector('#channel_list').appendChild(button);
     // Clear the input for new inputs
     document.querySelector("#channel").value = "";
     // Go to the messaging section
     document.querySelector('#channel_chosen').innerHTML = channel;
-    show({".welcome": "none", ".channel": "block", ".messaging": "block"});
+    show({".welcome": "block", ".channel": "block", ".messaging": "block"});
   };
 
   // Start the socket connection
