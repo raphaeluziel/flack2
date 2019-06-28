@@ -1,74 +1,156 @@
 document.addEventListener('DOMContentLoaded', () => {
 
-  // Welcome section
-  // If user already chose a display name skip welcome and go to topics section
-  if (localStorage.getItem('display_name')){
-    document.querySelector('.channel').style.display = "block";
-    document.querySelector("#username").innerHTML = localStorage.getItem('display_name');
-  }
-
-  // Store username in localstorage, then move on to topics section
-  document.querySelector("#submit_display_name").onclick = () =>
-  {
-    display_name = document.querySelector("#display_name").value;
-    localStorage.setItem("display_name", display_name);
-    document.querySelector('.channel').style.display = "block";
-    document.querySelector("#username").innerHTML = display_name;
-  }
+  function enableButton(button){
+    // Focus cursor on add channel input, and enable all channel selection buttons
+    document.getElementById(button).focus();
+    document.getElementById('submit_' + button).disabled = false;
+  };
 
   // Start the socket connection
   var socket = io.connect(location.protocol + '//' + document.domain + ':' + location.port);
   socket.on('connect', () => {
-    document.querySelector('#submit_message').onclick = () => {
-      when = new Date();
-      data = {
-        "username": localStorage.getItem('display_name'),
-        "channel": localStorage.getItem('channel'),
-        "timestamp": when.toDateString() + ' at ' + when.toLocaleTimeString(),
-        "message": document.querySelector('#message').value
-      };
-      socket.emit('process message', data);
-      // Clear textarea
-      document.querySelector('#message').value = '';
+
+    // Get channel and user list from server
+    socket.emit('process user', '');
+    socket.emit('process channel', '');
+
+    // If user already chose a display name
+    if (localStorage.getItem('display_name')){
+      // Welcome them by their username
+      document.querySelector("#username").innerHTML = localStorage.getItem('display_name');
+      enableButton('channel');
+    }
+
+    // Go to last channel user was in, if available
+    if (localStorage.getItem('channel')){
+      // Allow them to start messaging
+      document.querySelector("#channel_chosen").innerHTML = localStorage.getItem('channel');
+      enableButton('message');
+    }
+
+    // Submit new display name name request to server
+    document.querySelector('#submit_display_name').onclick = () => {
+      username = document.querySelector('#display_name').value;
+      // Button should do nothing if display_name field is blank
+      if (username != ''){
+        document.querySelector("#username").innerHTML = username;
+        localStorage.setItem("display_name", username);
+        //Clear the input for new user info
+        document.querySelector("#display_name").value = '';
+        // Send new user to server
+        socket.emit('process user', username);
+        // Get a channel list to display as well
+        socket.emit('process channel', '');
+      }
+      enableButton('channel');
+      // Prevent page from refreshing after form submission
+      return false;
     };
+
+    // Submit new channel request to server
     document.querySelector('#submit_channel').onclick = () => {
       channel = document.querySelector("#channel").value
-      localStorage.setItem("channel", channel);
-      // Clear the input for new inputs
-      document.querySelector("#channel").value = "";
-      // Go to the messaging section
-      document.querySelector('#channel_chosen').innerHTML = channel;
-      document.querySelector(".messaging").style.display = "block";
-      socket.emit('process channel', channel);
+      // Button does nothing unless chennel field is filled in
+      if (channel != ''){
+        localStorage.setItem("channel", channel);
+        // Clear the input for new inputs
+        document.querySelector("#channel").value = "";
+        // Display channels
+        document.querySelector('#channel_chosen').innerHTML = channel;
+        // Send channel to server
+        socket.emit('process channel', channel);
+      }
+      enableButton('message');
+      // Prevent page from refreshing after form submission
+      return false;
     };
+
+    // Submit message to server for processing
+    document.querySelector('#submit_message').onclick = () => {
+      message = document.querySelector('#message').value;
+      // Button should not send anything if field is blank
+      if (message != ''){
+        when = new Date();
+        data = {
+          "username": localStorage.getItem('display_name'),
+          "channel": localStorage.getItem('channel'),
+          "timestamp": when.toDateString() + ' at ' + when.toLocaleTimeString(),
+          "message": document.querySelector('#message').value
+        };
+        socket.emit('process message', data);
+        // Clear textarea
+        document.querySelector('#message').value = '';
+      }
+      // Prevent page from refreshing after form submission
+      return false;
+    };
+
   });
 
+
+  // Get current user list from server
+  socket.on('get users', (data) => {
+
+    // Clear the list first
+    document.querySelector('#user_list').innerHTML = '';
+
+    // Variable to hold all names on server
+    var names = '';
+
+    data.forEach(function(username){
+      // Create list of each user in server
+      names += username + ', ';
+    });
+    names = names.substring(0, names.length - 2) + '.';
+    document.querySelector('#user_list').innerHTML = names;
+  });
+
+  // Get current channel list from server
   socket.on('get channels', (data) => {
+
+    // Clear the list first
     document.querySelector('#channel_list').innerHTML = '';
 
     data.forEach(function(channel){
-      // Create buttons to access the channels
+
+      // Create button for each channel in list received by server
       const button = document.createElement('button');
-      button.className = "btn btn-info";
+      button.className = "btn btn-primary btn-sm channel_buttons";
       button.innerHTML = channel;
+      button.style.color = "yellow";
+      button.style.fontWeight = "bold";
+      if (!localStorage.getItem("display_name")){
+        button.disabled = true;
+      }
+
+
+      // Clicking button should switch channel, clear messages and enable messaging button
       button.onclick = function() {
         localStorage.setItem("channel", button.innerHTML);
         document.querySelector('#channel_chosen').innerHTML = button.innerHTML;
         document.querySelector('#message_list').innerHTML = '';
+        enableButton('message');
       }
+
+      // Add the button to the channel list
       document.querySelector('#channel_list').appendChild(button);
     });
   });
 
+  // Get messages from server
   socket.on('get messages', (data) => {
+
+    // Clear all messages
     document.querySelector('#message_list').innerHTML = '';
 
     data.forEach(function(message){
+
+      // Create a new list item for each message received by server
       const li = document.createElement('li');
       li.innerHTML = '<b>' + message.username + '</b> (<i style="font-size:70%;">' + message.timestamp + '</i>)<br>&nbsp;&nbsp;&nbsp;&nbsp;<i>' + message.message + '</i>';
-      document.querySelector('#message_list').append(li);
+      var parentNode = document.querySelector('#message_list');
+      document.querySelector('#message_list').insertBefore(li, parentNode.firstChild);
     });
-
   });
 
 

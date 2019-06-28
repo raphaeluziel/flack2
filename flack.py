@@ -15,19 +15,27 @@ app = Flask(__name__)
 app.config["SECRET_KEY"] = os.getenv("SECRET_KEY")
 socketio = SocketIO(app)
 
-user_list = []
-channel_list = []
+user_list = ["raphael", "genie", "joseph", "alegreroza", "max"]
+channel_list = ["Physics", "Coding", "Astronomy", "Books of the nineteenth century", "Folk music's relationships to rock"]
 message_list = {}
 
 @app.route("/")
 def index():
     return render_template("index.html")
 
+# Client submits a username
+@socketio.on("process user")
+def username(data):
+    if data not in user_list and data != '':
+        user_list.append(data)
+    emit("get users", user_list, broadcast=True)
+
 # Client requests a channel
 @socketio.on("process channel")
 def channel(data):
-    if data not in channel_list:
+    if data not in channel_list and data != '':
         channel_list.append(data)
+    channel_list.sort()
     emit("get channels", channel_list, broadcast=True)
 
 
@@ -40,12 +48,6 @@ def message(data):
         message_list[data["channel"]].append(data)
     else:
         message_list[data["channel"]] = [data]
-
-    information = {
-        "message_list": message_list[data["channel"]],
-        "users": user_list,
-        "channels": channel_list
-        }
 
     # Server sends client the data
     emit("get messages", message_list[data["channel"]], broadcast=True)
