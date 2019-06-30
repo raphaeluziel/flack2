@@ -1,10 +1,35 @@
 document.addEventListener('DOMContentLoaded', () => {
 
-  function enableButton(button){
-    // Focus cursor on add channel input, and enable all channel selection buttons
-    document.getElementById(button).focus();
-    document.getElementById('submit_' + button).disabled = false;
+  function enableSection(section){
+    var button = "submit_" + section;
+    document.querySelector('.welcome').style.display = "none";
+    document.getElementById(button).disabled = false;
+    if (section == "message"){
+      document.querySelector('.message').style.display = "block";
+      document.querySelector('.channel').style.display = "none";
+    }
+    document.getElementById(section).focus();
   };
+
+  function sendInitialMessage(message){
+    when = new Date();
+    initial_message = {
+      "username": localStorage.getItem('display_name'),
+      "channel": localStorage.getItem('channel'),
+      "timestamp": when.toDateString() + ' at ' + when.toLocaleTimeString(),
+      "message": localStorage.getItem('display_name') + message + localStorage.getItem('channel')
+    };
+    socket.emit('process message', initial_message);
+  }
+
+  document.getElementById("change_user").onclick = () => {
+    document.querySelector('.welcome').style.display = "block";
+  }
+
+  document.getElementById("change_channel").onclick = () => {
+    document.querySelector('.channel').style.display = "block";
+    document.querySelector('.message').style.display = "none";
+  }
 
   // Start the socket connection
   var socket = io.connect(location.protocol + '//' + document.domain + ':' + location.port);
@@ -18,14 +43,14 @@ document.addEventListener('DOMContentLoaded', () => {
     if (localStorage.getItem('display_name')){
       // Welcome them by their username
       document.querySelector("#username").innerHTML = localStorage.getItem('display_name');
-      enableButton('channel');
+      enableSection('channel');
     }
 
     // Go to last channel user was in, if available
     if (localStorage.getItem('channel')){
       // Allow them to start messaging
       document.querySelector("#channel_chosen").innerHTML = localStorage.getItem('channel');
-      enableButton('message');
+      enableSection('message');
     }
 
     // Submit new display name name request to server
@@ -42,7 +67,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // Get a channel list to display as well
         socket.emit('process channel', '');
       }
-      enableButton('channel');
+      enableSection('channel');
       // Prevent page from refreshing after form submission
       return false;
     };
@@ -60,7 +85,8 @@ document.addEventListener('DOMContentLoaded', () => {
         // Send channel to server
         socket.emit('process channel', channel);
       }
-      enableButton('message');
+      enableSection('message');
+      sendInitialMessage(' has created a new channel, ')
       // Prevent page from refreshing after form submission
       return false;
     };
@@ -92,7 +118,7 @@ document.addEventListener('DOMContentLoaded', () => {
   socket.on('get users', (data) => {
 
     // Clear the list first
-    document.querySelector('#user_list').innerHTML = '';
+    // document.querySelector('#user_list').innerHTML = '';
 
     // Variable to hold all names on server
     var names = '';
@@ -102,7 +128,7 @@ document.addEventListener('DOMContentLoaded', () => {
       names += username + ', ';
     });
     names = names.substring(0, names.length - 2) + '.';
-    document.querySelector('#user_list').innerHTML = names;
+    //document.querySelector('#user_list').innerHTML = names;
   });
 
   // Get current channel list from server
@@ -115,10 +141,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
       // Create button for each channel in list received by server
       const button = document.createElement('button');
-      button.className = "btn btn-primary btn-sm channel_buttons";
+      button.className = "btn btn-info btn-sm channel_buttons";
       button.innerHTML = channel;
-      button.style.color = "yellow";
-      button.style.fontWeight = "bold";
       if (!localStorage.getItem("display_name")){
         button.disabled = true;
       }
@@ -129,7 +153,8 @@ document.addEventListener('DOMContentLoaded', () => {
         localStorage.setItem("channel", button.innerHTML);
         document.querySelector('#channel_chosen').innerHTML = button.innerHTML;
         document.querySelector('#message_list').innerHTML = '';
-        enableButton('message');
+        enableSection('message');
+        sendInitialMessage(' has joined the conversation in the channel, ')
       }
 
       // Add the button to the channel list
@@ -148,8 +173,10 @@ document.addEventListener('DOMContentLoaded', () => {
       // Create a new list item for each message received by server
       const li = document.createElement('li');
       li.innerHTML = '<b>' + message.username + '</b> (<i style="font-size:70%;">' + message.timestamp + '</i>)<br>&nbsp;&nbsp;&nbsp;&nbsp;<i>' + message.message + '</i>';
-      var parentNode = document.querySelector('#message_list');
-      document.querySelector('#message_list').insertBefore(li, parentNode.firstChild);
+      document.querySelector('#message_list').append(li);
+
+      // Force scrollbar to bottom
+      document.querySelector(".message_box").scrollTop = document.querySelector(".message_box").scrollHeight;
     });
   });
 

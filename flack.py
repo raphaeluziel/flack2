@@ -16,7 +16,7 @@ app.config["SECRET_KEY"] = os.getenv("SECRET_KEY")
 socketio = SocketIO(app)
 
 user_list = ["raphael", "genie", "joseph", "alegreroza", "max"]
-channel_list = ["Physics", "Coding", "Astronomy", "Books of the nineteenth century", "Folk music's relationships to rock"]
+channel_list = ["Physics", "Coding", "Astronomy", "Books of the nineteenth century", "Folk music's relationships to rock", "teaching high school physics", "ballroom dancing"]
 message_list = {}
 
 @app.route("/")
@@ -35,13 +35,15 @@ def username(data):
 def channel(data):
     if data not in channel_list and data != '':
         channel_list.append(data)
-    channel_list.sort()
+    channel_list.sort(key=str.lower)
     emit("get channels", channel_list, broadcast=True)
 
 
 # Server receives message sent by client
 @socketio.on("process message")
 def message(data):
+
+    # Limit the number of messages stored
 
     # Add data to the message_list channel array, or create it
     if data["channel"] in message_list:

@@ -12,45 +12,48 @@
     <link rel="icon" href="/favicon.ico" type="image/x-icon">
   </head>
   <body>
-    <h1>welcome to flack<br></h1>
-    <h3 id="username"></h3>
+    <div class="container">
 
-    <h5 class="userlist">List of users:</h5>
-    <p id="user_list"></p>
+      <div class="top_bar">
+        <h1>flack by uziel</h1>
+        <p>User: <span id="username">Guest</span> &nbsp;&nbsp;<a href="#" id="change_user">(change)</a></p>
+        <p>Channel: <span id="channel_chosen">none</span> &nbsp;&nbsp;<a href="#" id="change_channel">(change)</a></p>
+      </div>
 
-    <div class="welcome">
-      <form class="form-inline">
-        <div class="form-group">
-          <label class="sr-only">Choose Display Name:</label>
-          <input id="display_name" type="text" class="form-control" placeholder="choose display name" autofocus>
-        </div>
-        <button id="submit_display_name" class="btn btn-success">submit</button>
-      </form>
+
+      <div class="welcome">
+        <form class="form-inline">
+          <div class="form-group">
+            <label class="sr-only">Choose Display Name:</label>
+            <input id="display_name" type="text" class="form-control" placeholder="choose display name" autofocus>
+          </div>
+          <button id="submit_display_name" class="btn btn-success">submit</button>
+        </form>
+      </div>
+
+      <div class="channel">
+        <p>Choose from one of these popular channels, or create one of your own:</p>
+        <div id="channel_list"></div>
+        <form class="form-inline">
+          <div class="form-group">
+            <label class="sr-only">Create New Channel:</label>
+            <input id="channel" type="text" class="form-control" placeholder="create new channel" autofocus>
+          </div>
+          <button id="submit_channel" class="btn btn-success" disabled>submit</button>
+        </form>
+      </div>
+
+      <div class="message">
+        <div class="message_box"><ul id="message_list"></ul></div>
+        <form class="form-inline">
+          <div class="form-group">
+            <label class="sr-only">Send message</label>
+            <input id="message" class="form-control" style="min-width: 100%!important;" type="text" autofocus>
+          </div>
+          <button id="submit_message" class="btn btn-success" disabled>send</button>
+        </form>
+      </div>
+
     </div>
-
-    <div class="channel">
-      <p>Choose from one of these popular channels, or create one of your own:</p>
-      <div id="channel_list"></div>
-      <form class="form-inline">
-        <div class="form-group">
-          <label class="sr-only">Create New Channel:</label>
-          <input id="channel" type="text" class="form-control" placeholder="create new channel" autofocus>
-        </div>
-        <button id="submit_channel" class="btn btn-success" disabled>submit</button>
-      </form>
-      <h3 id="channel_chosen"></h3>
-    </div>
-
-    <div class="messaging">
-      <form>
-        <div class="form-group">
-          <label class="sr-only">Send message</label>
-          <input id="message" class="form-control" type="text" autofocus>
-        </div>
-        <button id="submit_message" class="btn btn-success" disabled>send</button>
-      </form>
-      <ul id="message_list"></ul>
-    </div>
-
   </body>
 </html>
