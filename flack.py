@@ -16,8 +16,8 @@ app.config["SECRET_KEY"] = os.getenv("SECRET_KEY")
 socketio = SocketIO(app)
 
 user_list = ["raphael", "genie", "joseph", "alegreroza", "max"]
-channel_list = ["Physics", "Coding", "Astronomy", "Books of the nineteenth century", "Folk music's relationships to rock", "teaching high school physics", "ballroom dancing"]
-message_list = {}
+channel_list = ["Physics", "Coding", "Astronomy", "Books of the nineteenth century", "Folk music's relationships to rock", "Teaching high school physics", "Ballroom dancing"]
+messages = {}
 
 @app.route("/")
 def index():
@@ -33,9 +33,15 @@ def username(data):
 # Client requests a channel
 @socketio.on("process channel")
 def channel(data):
+
+    # Add channel if not in list
     if data not in channel_list and data != '':
         channel_list.append(data)
+
+    # Sort list, ignoring case
     channel_list.sort(key=str.lower)
+
+    # Send client the new list
     emit("get channels", channel_list, broadcast=True)
 
 
@@ -43,16 +49,19 @@ def channel(data):
 @socketio.on("process message")
 def message(data):
 
-    # Limit the number of messages stored
-
     # Add data to the message_list channel array, or create it
-    if data["channel"] in message_list:
-        message_list[data["channel"]].append(data)
+    if data["channel"] in messages:
+        messages[data["channel"]].append(data)
     else:
-        message_list[data["channel"]] = [data]
+        messages[data["channel"]] = [data]
+
+    # Limit the number of messages stored in server
+    limit = 100
+    if len(messages[data["channel"]]) > limit:
+        messages[data["channel"]].pop(0)
 
     # Server sends client the data
-    emit("get messages", message_list[data["channel"]], broadcast=True)
+    emit("get messages", messages[data["channel"]], broadcast=True)
 
 
 if __name__ == "__main__":

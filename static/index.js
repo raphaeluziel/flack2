@@ -31,6 +31,9 @@ document.addEventListener('DOMContentLoaded', () => {
     document.querySelector('.message').style.display = "none";
   }
 
+  // Variables to hold current channels received from server
+  var current_channel_list = [];
+
   // Start the socket connection
   var socket = io.connect(location.protocol + '//' + document.domain + ':' + location.port);
   socket.on('connect', () => {
@@ -76,13 +79,21 @@ document.addEventListener('DOMContentLoaded', () => {
     // Submit new channel request to server
     document.querySelector('#submit_channel').onclick = () => {
       channel = document.querySelector("#channel").value
-      // Button does nothing unless chennel field is filled in
+      // Button does nothing unless channel field is filled in
       if (channel != ''){
         localStorage.setItem("channel", channel);
         // Clear the input for new inputs
         document.querySelector("#channel").value = "";
         // Display channels
         document.querySelector('#channel_chosen').innerHTML = channel;
+        // Is channel being requested a duplicate?
+        console.log("current_channel_list", current_channel_list);
+        console.log("channel", channel);
+        if (current_channel_list.includes(channel)){
+          console.log("CHANNEL ALREADY EXISTS");
+        }
+
+
         // Send channel to server
         socket.emit('process channel', channel);
       }
@@ -121,19 +132,19 @@ document.addEventListener('DOMContentLoaded', () => {
     // Clear the list first
     // document.querySelector('#user_list').innerHTML = '';
 
-    // Variable to hold all names on server
-    var names = '';
-
     data.forEach(function(username){
       // Create list of each user in server
-      names += username + ', ';
+      //names += username + ', ';
     });
-    names = names.substring(0, names.length - 2) + '.';
+    //names = names.substring(0, names.length - 2) + '.';
     //document.querySelector('#user_list').innerHTML = names;
   });
 
   // Get current channel list from server
   socket.on('get channels', (data) => {
+
+    // Store the channel list in lowercase to check if request is duplicate
+    current_channel_list = data.map(chan => chan.toLowerCase());
 
     // Clear the list first
     document.querySelector('#channel_list').innerHTML = '';
