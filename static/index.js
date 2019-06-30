@@ -51,6 +51,7 @@ document.addEventListener('DOMContentLoaded', () => {
       // Allow them to start messaging
       document.querySelector("#channel_chosen").innerHTML = localStorage.getItem('channel');
       enableSection('message');
+      sendInitialMessage(' has joined the conversation in the channel, ');
     }
 
     // Submit new display name name request to server
@@ -154,7 +155,7 @@ document.addEventListener('DOMContentLoaded', () => {
         document.querySelector('#channel_chosen').innerHTML = button.innerHTML;
         document.querySelector('#message_list').innerHTML = '';
         enableSection('message');
-        sendInitialMessage(' has joined the conversation in the channel, ')
+        sendInitialMessage(' has joined the conversation in the channel, ');
       }
 
       // Add the button to the channel list
