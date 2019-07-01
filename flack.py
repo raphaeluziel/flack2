@@ -15,7 +15,7 @@ app = Flask(__name__)
 app.config["SECRET_KEY"] = os.getenv("SECRET_KEY")
 socketio = SocketIO(app)
 
-user_list = ["raphael", "genie", "joseph", "alegreroza", "max"]
+user_list = ["raphael", "genie", "joseph", "alegreroza"]
 channel_list = ["Physics", "Coding", "Astronomy", "Books of the nineteenth century", "Folk music's relationships to rock", "Teaching high school physics", "Ballroom dancing"]
 messages = {}
 
@@ -26,7 +26,7 @@ def index():
 # Client submits a username
 @socketio.on("process user")
 def username(data):
-    if data not in user_list and data != '':
+    if data not in user_list:
         user_list.append(data)
     emit("get users", user_list, broadcast=True)
 
@@ -65,5 +65,4 @@ def message(data):
 
 
 if __name__ == "__main__":
-    print("OK, it should be running")
     socketio.run(app, host='0.0.0.0')

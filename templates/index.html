@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js"></script>
     <script type="text/javascript" src="/static/index.js"></script>
+    <script src="https://kit.fontawesome.com/28c738b143.js"></script>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <link rel="stylesheet" href="/static/styles.css">
     <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
@@ -22,9 +23,10 @@
 
 
       <div class="welcome">
+        <p>Choose a username and password to login, or to register.</p>
         <form class="form-inline">
           <div class="form-group">
-            <label class="sr-only">Choose Display Name:</label>
+            <label class="sr-only">Choose display name:</label>
             <input id="display_name" type="text" class="form-control" placeholder="choose display name" autofocus>
           </div>
           <button id="submit_display_name" class="btn btn-success">submit</button>
@@ -36,10 +38,20 @@
         <div id="channel_list"></div>
         <form class="form-inline">
           <div class="form-group">
-            <label class="sr-only">Create New Channel:</label>
+            <label class="sr-only">Create New Channel</label>
             <input id="channel" type="text" class="form-control" placeholder="create new channel" autofocus>
           </div>
           <button id="submit_channel" class="btn btn-success" disabled>submit</button>
+        </form>
+        <span id="channel_error"></span>
+
+        <p>Or send a private message to a particular user</p>
+        <form class="form-inline">
+          <div class="form-group">
+            <label class="sr-only">Connect to another user</label>
+            <input id="connect_to_user" type="text" class="form-control" placeholder="user to connect to" autofocus>
+          </div>
+          <button id="submit_user_connect" class="btn btn-success">connect</button>
         </form>
       </div>
 
@@ -49,6 +61,8 @@
           <div class="form-group">
             <label class="sr-only">Send message</label>
             <input id="message" class="form-control" style="min-width: 100%!important;" type="text" autofocus>
+            <input id="open_file" type="file" hidden>
+            <i id="paperclip" class="fas fa-paperclip"></i>
           </div>
           <button id="submit_message" class="btn btn-success" disabled>send</button>
         </form>
