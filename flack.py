@@ -64,5 +64,15 @@ def message(data):
     emit("get messages", messages[data["channel"]], broadcast=True)
 
 
+# Server deletes message
+@socketio.on("delete message")
+def delete(data):
+
+    if data in messages[data["channel"]]:
+        messages[data["channel"]].remove(data)
+
+    # Server sends client the new message list
+    emit("get messages", messages[data["channel"]], broadcast=True)
+
 if __name__ == "__main__":
     socketio.run(app, host='0.0.0.0')

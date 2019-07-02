@@ -24,6 +24,11 @@ li{
   color: gray;
 }
 
+.fa-minus-circle{
+  color: #c66;
+  cursor: pointer;
+}
+
 
 /* Messaging copied from Bootstrap 4 source, but changing max-width to width */
 

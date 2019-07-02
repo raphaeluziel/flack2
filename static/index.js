@@ -19,7 +19,8 @@ document.addEventListener('DOMContentLoaded', () => {
       "username": localStorage.getItem('display_name'),
       "channel": localStorage.getItem('channel'),
       "timestamp": when.toDateString() + ' at ' + when.toLocaleTimeString(),
-      "message": localStorage.getItem('display_name') + message + localStorage.getItem('channel')
+      "message": localStorage.getItem('display_name') + message + localStorage.getItem('channel'),
+      "delete": 0
     };
     socket.emit('process message', initial_message);
   }
@@ -186,7 +187,7 @@ document.addEventListener('DOMContentLoaded', () => {
         document.querySelector('#message_list').innerHTML = '';
         enableSection('message');
         sendInitialMessage(' has joined the conversation in the channel, ');
-      }
+      };
       // Add the button to the channel list
       document.querySelector('#channel_list').appendChild(button);
     });
@@ -199,9 +200,18 @@ document.addEventListener('DOMContentLoaded', () => {
     document.querySelector('#message_list').innerHTML = '';
 
     data.forEach(function(message){
+      // Create new delete button for each message
+      const i = document.createElement('i');
+      i.className = 'fas fa-minus-circle';
+      i.onclick = function(){
+        socket.emit('delete message', message);
+      };
+
       // Create a new list item for each message received by server
       const li = document.createElement('li');
-      li.innerHTML = '<b>' + message.username + '</b> <i style="font-size:70%;">(' + message.timestamp + ')</i><br>&nbsp;&nbsp;&nbsp;&nbsp;<i>' + message.message + '</i>';
+      li.innerHTML = ' <b>' + message.username + '</b> <i style="font-size:70%;">(' + message.timestamp + ')</i>';
+      li.innerHTML += '<br>&nbsp;&nbsp;&nbsp;&nbsp;<i>' + message.message + '</i>';
+      li.prepend(i);
 
       /*
       if (message.file){
@@ -211,9 +221,10 @@ document.addEventListener('DOMContentLoaded', () => {
         li.innerHTML = '<b>' + message.username + '</b> <i style="font-size:70%;">(' + message.timestamp + ')</i><br>&nbsp;&nbsp;&nbsp;&nbsp;<i>' + message.message + '</i>';
       }
       */
-
-      document.querySelector('#message_list').append(li);
       
+      // Add the message to the list
+      document.querySelector('#message_list').append(li);
+
       // Force scrollbar to bottom
       document.querySelector(".message_box").scrollTop = document.querySelector(".message_box").scrollHeight;
     });
