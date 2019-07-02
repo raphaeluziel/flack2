@@ -23,12 +23,14 @@ messages = {}
 def index():
     return render_template("index.html")
 
+
 # Client submits a username
 @socketio.on("process user")
 def username(data):
     if data not in user_list:
         user_list.append(data)
     emit("get users", user_list, broadcast=True)
+
 
 # Client requests a channel
 @socketio.on("process channel")
@@ -73,6 +75,7 @@ def delete(data):
 
     # Server sends client the new message list
     emit("get messages", messages[data["channel"]], broadcast=True)
+
 
 if __name__ == "__main__":
     socketio.run(app, host='0.0.0.0')

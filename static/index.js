@@ -39,24 +39,6 @@ document.addEventListener('DOMContentLoaded', () => {
   // Hold current channels received from server to check for duplicates
   var current_channel_list = [];
 
-/*
-  // Variable to hold file name ****************************************************************
-  var file = '';
-
-  // Upload file ********************************************************************************
-  document.getElementById("paperclip").onclick = () => {
-    document.getElementById("open_file").click();
-    document.getElementById("open_file").onchange = () => {
-      if (event.target.files){
-        console.log(event.target.files[0]);
-        file = event.target.files[0].name;
-      }
-    };
-  };
-  // BLOB **********************************************************************************
-  var myBlob = new Blob(["This is my blob content"], {type : "text/plain"});
-*/
-
   // Start the socket connection
   var socket = io.connect(location.protocol + '//' + document.domain + ':' + location.port);
   socket.on('connect', () => {
@@ -134,10 +116,7 @@ document.addEventListener('DOMContentLoaded', () => {
           "channel": localStorage.getItem('channel'),
           "timestamp": when.toDateString() + ' at ' + when.toLocaleTimeString(),
           "message": document.querySelector('#message').value
-          //"file": file, //******************************************************************
-          //"binary": ""
         };
-        //////////////////console.log("SOCKET FILE", file); //***********************************************
         socket.emit('process message', data);
         // Clear textarea
         document.querySelector('#message').value = '';
@@ -146,21 +125,6 @@ document.addEventListener('DOMContentLoaded', () => {
       return false;
     };
 
-  });
-
-
-  // Get current user list from server
-  socket.on('get users', (data) => {
-
-    // Clear the list first
-    // document.querySelector('#user_list').innerHTML = '';
-
-    data.forEach(function(username){
-      // Create list of each user in server
-      //names += username + ', ';
-    });
-    //names = names.substring(0, names.length - 2) + '.';
-    //document.querySelector('#user_list').innerHTML = names;
   });
 
   // Get current channel list from server
@@ -204,7 +168,12 @@ document.addEventListener('DOMContentLoaded', () => {
       const i = document.createElement('i');
       i.className = 'fas fa-minus-circle';
       i.onclick = function(){
-        socket.emit('delete message', message);
+        if (message.username == localStorage.getItem("display_name")){
+          socket.emit('delete message', message);
+        }
+        else{
+          i.disabled = true;
+        }
       };
 
       // Create a new list item for each message received by server
@@ -213,15 +182,6 @@ document.addEventListener('DOMContentLoaded', () => {
       li.innerHTML += '<br>&nbsp;&nbsp;&nbsp;&nbsp;<i>' + message.message + '</i>';
       li.prepend(i);
 
-      /*
-      if (message.file){
-        li.innerHTML = '<b>' + message.username + '</b> <i style="font-size:70%;">(' + message.timestamp + ')</i><br>&nbsp;&nbsp;&nbsp;&nbsp;<i>' + message.message + '<br>&nbsp;&nbsp;&nbsp;&nbsp;attachment: ' + message.file + '</i>';
-      }
-      else{
-        li.innerHTML = '<b>' + message.username + '</b> <i style="font-size:70%;">(' + message.timestamp + ')</i><br>&nbsp;&nbsp;&nbsp;&nbsp;<i>' + message.message + '</i>';
-      }
-      */
-      
       // Add the message to the list
       document.querySelector('#message_list').append(li);
 
