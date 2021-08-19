@@ -1,0 +1,14 @@
+[Unit]
+Description=Gunicorn instance to serve flack
+After=network.target
+
+[Service]
+User=raphaeluziel
+Group=www-data
+WorkingDirectory=/home/raphaeluziel/flack
+Environment="PATH=/home/raphaeluziel/flack/flackenv/bin"
+ExecStart=/home/raphaeluziel/flack/flackenv/bin/gunicorn --worker-class eventlet -w 1 --bind unix:flack.sock wsgi:app
+
+[Install]
+WantedBy=multi-user.target
+
