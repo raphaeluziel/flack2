@@ -1,6 +1,6 @@
 Flask
 Flask-SocketIO<5
 python-dotenv
-eventlet==0.30.2
+eventlet==0.31.0
 python-socketio<5
 gunicorn
