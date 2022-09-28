@@ -2,4 +2,4 @@ Flask
 Flask-SocketIO
 python-dotenv
 eventlet
-gunicorn
+https://github.com/benoitc/gunicorn/archive/refs/heads/master.zip#egg=gunicorn==20.1.0

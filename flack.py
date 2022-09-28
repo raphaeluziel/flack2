@@ -15,6 +15,7 @@ app = Flask(__name__)
 app.config["SECRET_KEY"] = os.getenv("SECRET_KEY")
 socketio = SocketIO(app)
 
+
 user_list = ["raphael", "genie", "joseph", "alegreroza"]
 channel_list = ["Physics", "Coding", "Astronomy", "Books of the nineteenth century", "Folk music's relationships to rock", "Teaching high school physics", "Ballroom dancing"]
 messages = {}

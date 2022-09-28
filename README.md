@@ -9,3 +9,7 @@ The index.js file is where most of the code is, and it handles the client side. 
 For my personal touch, I chose to add a delete button to each message, where a user can delete his or her own message.  I was not able to figure out how to do the private messaging, or how to handle file uploads.  That's a TODO.
 
 The working website is at https://flack.raphaeluziel.net.
+
+
+## NOTE:
+https://github.com/pymedusa/Medusa/issues/10253
